@@ -1,0 +1,88 @@
+############################################################################
+#
+# Copyright (c) 2014 - JustArchi (JustArchi@JustArchi)
+#
+# Android Kitchen is 100% free.  This script file is intended for personal
+# and/or educational use only.  It may not be duplicated for monetary
+# benefit or any other purpose without the permission of the developer.
+#
+############################################################################
+
+#
+# This script has two optional arguments: 
+#
+# $1 = "no_info"      - specify this when porting or extracting kernel
+# $2 = "kernel_only"  - if this is specified, then $1 is mandatory
+#
+
+echo "Looking for system.img..."
+SYSTEMDIR=""
+cd original_update
+for f in $(find . -type f -iname "system.img"); do
+	echo "Found system.img in $f"
+	SYSTEMDIR=$(dirname $f)
+	break
+done
+if [ -z "$SYSTEMDIR" ]; then
+	echo "No system.img found"
+	SEARCH=1
+	while [ $SEARCH -eq 1 ]; do
+		COUNT=0
+		for i in $(find . -type f); do
+			COUNT=$(expr $COUNT + 1)
+			echo "["$COUNT"] - $i"
+		done
+		echo "Please tell me which file should contain system.img"
+		read CHOICE
+		if [ $CHOICE -gt $COUNT ] || [ $CHOICE -lt 1 ]; then
+			echo "Error, invalid selection"
+			exit 1
+		fi
+		COUNT=$CHOICE
+		for i in $(find . -type f); do
+			COUNT=$(expr $COUNT - 1)
+			if [ $COUNT -eq 0 ]; then
+				FILE="$i"
+				break
+			fi
+		done
+		echo "Extracting everything from $FILE"
+		tar xvf $FILE || unzip $FILE
+		if [ $? -ne 0 ]; then
+			echo "ERROR"
+		fi
+		for f in $(find . -type f -iname "system.img"); do
+			echo "Found system.img in $f"
+			SYSTEMDIR=$(dirname $f)
+			break
+		done
+		if [ -z "$SYSTEMDIR" ]; then
+			echo "No system.img found"
+		else
+			SEARCH=0
+		fi
+	done
+fi
+
+cd ..
+BUILDDIR=`scripts/set_working_folder_name $2`
+cd original_update
+mkdir -p ../$BUILDDIR/system
+cp $SYSTEMDIR/boot.img ../$BUILDDIR
+cp $SYSTEMDIR/system.img ../$BUILDDIR/system
+for EXTRA in 'cache.img'; do
+	if [ -e $SYSTEMDIR/$EXTRA ]; then
+		echo "Found $EXTRA"
+		cp $SYSTEMDIR/$EXTRA ../$BUILDDIR
+	fi
+done
+
+cd ../$BUILDDIR/system
+if [ `od -A n -h -j 0 -N 5 system.img | sed 's/ //g'` == "ff3aed260001" ]; then
+	mv -fv system.img ../system.img.ext4
+	cd ../..
+	scripts/simg_ext4_files_to_working_folder no_create
+	exit $?
+fi
+
+exit 0
