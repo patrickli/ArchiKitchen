@@ -18,10 +18,19 @@
 echo "Looking for system.img..."
 SYSTEMDIR=""
 cd original_update
-for f in $(find . -type f -iname "system.img"); do
-	echo "Found system.img in $f"
-	SYSTEMDIR=$(dirname $f)
-	break
+for f in $(find . -type f); do
+	case "$f" in
+		"system.img")
+			;&
+		"system.img.ext4")
+			echo "Found system.img in $f"
+			SYSTEMDIR=$(dirname $f)
+			SYSTEMFILE=$(basename $f)
+			break
+			;;
+		*)
+			continue
+	esac
 done
 if [ -z "$SYSTEMDIR" ]; then
 	echo "No system.img found"
@@ -51,10 +60,19 @@ if [ -z "$SYSTEMDIR" ]; then
 		if [ $? -ne 0 ]; then
 			echo "ERROR"
 		fi
-		for f in $(find . -type f -iname "system.img"); do
-			echo "Found system.img in $f"
-			SYSTEMDIR=$(dirname $f)
-			break
+		for f in $(find . -type f); do
+			case "$f" in
+				"system.img")
+					;&
+				"system.img.ext4")
+					echo "Found system.img in $f"
+					SYSTEMDIR=$(dirname $f)
+					SYSTEMFILE=$(basename $f)
+					break
+					;;
+				*)
+					continue
+			esac
 		done
 		if [ -z "$SYSTEMDIR" ]; then
 			echo "No system.img found"
@@ -69,7 +87,7 @@ BUILDDIR=`scripts/set_working_folder_name $2`
 cd original_update
 mkdir -p ../$BUILDDIR/system
 cp $SYSTEMDIR/boot.img ../$BUILDDIR
-cp $SYSTEMDIR/system.img ../$BUILDDIR/system
+cp $SYSTEMDIR/$SYSTEMFILE ../$BUILDDIR/system
 for EXTRA in 'cache.img'; do
 	if [ -e $SYSTEMDIR/$EXTRA ]; then
 		echo "Found $EXTRA"
@@ -78,8 +96,10 @@ for EXTRA in 'cache.img'; do
 done
 
 cd ../$BUILDDIR/system
-if [ `od -A n -h -j 0 -N 5 system.img | sed 's/ //g'` == "ff3aed260001" ]; then
-	mv -fv system.img ../system.img.ext4
+if [ `od -A n -h -j 0 -N 5 $SYSTEMFILE | sed 's/ //g'` == "ff3aed260001" ]; then
+	if [ "$SYSTEMFILE" != "system.img.ext4" ]; then
+		mv -fv $SYSTEMFILE ../system.img.ext4
+	fi
 	cd ../..
 	scripts/simg_ext4_files_to_working_folder no_create
 	exit $?

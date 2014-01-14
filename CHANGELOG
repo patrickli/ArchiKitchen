@@ -1,0 +1,12 @@
+- Reworked rom detection [WIP]
+- Reworked rooting [WIP]
+- Added support for deodexing priv-app folder [WIP]
+- Updated SuperSU to v1.86
+- Added Koush Superuser v1.0.2.8
+- Removed obsolete ChainsDD superuser + old su
+- Updated Busybox to 1.21.1
+- Updated Baksmali/Smali to 2.0.2
+- Bumped default API level to 18
+- Added support for Nexus 5
+- Added support for GT-I9502 (Chinese S4)
+- Added support for Galaxy Note 3

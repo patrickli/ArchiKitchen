@@ -73,7 +73,7 @@ do
   echo "> MAIN MENU"
   echo
   echo "  1 - Set up working folder from ROM, using JustArchi's method (WIP)"
-  echo "  1z - Set up working folder from ROM using old dsixda's method"
+  echo "  11 - Set up working folder from ROM using old dsixda's method"
   echo "  2 - Add root permissions"
   echo "  3 - Add BusyBox"
   echo "  4 - Disable boot screen sounds"
@@ -102,7 +102,7 @@ do
   then
     case $opt in
       1) clear; scripts/set_working_dir; continue;;
-      1z) clear; scripts/check_Rom; continue;;
+      11) clear; scripts/check_Rom; continue;;
       2) scripts/do_root; continue;;
       3) scripts/add_busybox show_help;;
       4) scripts/disable_sounds;;
