@@ -102,7 +102,7 @@ do
   then
     case $opt in
       1) clear; scripts/set_working_dir; continue;;
-      11) clear; scripts/check_Rom; continue;;
+      11) clear; scripts/check_rom; continue;;
       2) scripts/do_root; continue;;
       3) scripts/add_busybox show_help;;
       4) scripts/disable_sounds;;
