@@ -19,7 +19,8 @@ echo "Looking for system.img..."
 SYSTEMDIR=""
 cd original_update
 for f in $(find . -type f); do
-	case "$f" in
+	FILE=$(basename $f)
+	case "$FILE" in
 		"system.img")
 			;&
 		"system.img.ext4")
@@ -61,7 +62,8 @@ if [ -z "$SYSTEMDIR" ]; then
 			echo "ERROR"
 		fi
 		for f in $(find . -type f); do
-			case "$f" in
+			FILE=$(basename $f)
+			case "$FILE" in
 				"system.img")
 					;&
 				"system.img.ext4")
