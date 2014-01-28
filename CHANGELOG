@@ -7,7 +7,7 @@ JustArchi's Android Kitchen
 - Updated SuperSU to v1.89
 - Added Koush Superuser v1.0.2.8
 - Removed obsolete ChainsDD superuser + old su
-- Updated Busybox to 1.21.1
+- Updated Busybox to 1.22.1
 - Updated Baksmali/Smali to 2.0.3
 - Bumped default API level to 18
 - Added support for Nexus 5
