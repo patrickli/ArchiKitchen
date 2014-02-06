@@ -39,9 +39,6 @@ for TOOL in "${TOOLS[@]}"; do
 	fi
 done
 
-# Make sure our tools are executable
-chmod -R 755 tools
-
 # Core
 PRESS_ENTER() {
 	read -p "Press [Enter] key to continue..."
